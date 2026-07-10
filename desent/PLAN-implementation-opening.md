@@ -138,11 +138,11 @@ type SlidingDoorProps = {
 ```
 
 Responsibilities:
-- Render stylized sliding studio door / frosted-glass panels.
+- Render door-transition overlay over `doors.webp`: vignette, warm light spill, portal ring.
 - Show light spill from behind the door.
 - When `phase === "preparing"`, show subtle preparing state: “Setting up your desk…”.
 - When `phase === "revealing"`, play door-open animation.
-- Respect `prefers-reduced-motion`.
+- Animations always play; reduced-motion gating is intentionally disabled.
 
 ### `components/opening/RevealedRoom.tsx`
 
@@ -176,10 +176,11 @@ Flow:
 Timing:
 - Preparing target: 0.6-1.5s, but open early if assets are ready.
 - Door reveal animation: about 600-700ms.
-- Reduced motion: replace slide with short fade.
+- Reduced-motion gating removed: animations always play by request.
 
 Preload list for this wave:
-- `/office.jpg`
+- `/doors.webp` arrival background.
+- `/office.jpg` revealed-room background.
 - Future default-preset image sources when catalog gains real images.
 - No full-catalog preload before reveal.
 
@@ -316,7 +317,7 @@ Manual checks:
 - CTA is keyboard reachable and activates with Enter/Space.
 - Network throttled: preparing state shows meaningful microcopy, not blank spinner.
 - Fast network: door still opens quickly; no long artificial wait.
-- Reduced motion enabled: no large slide; short fade only.
+- Animations always play; reduced-motion fallback intentionally removed.
 - Revealed room shows default Coder setup: standing desk, ergo chair, main monitor, second monitor, lamp, headphones.
 
 ## Review routing
@@ -330,3 +331,7 @@ Manual checks:
 - 2026-07-10: Created parallelizable implementation plan for opening focus only. Defined contracts, lanes, dependencies, ownership, and verification.
 - 2026-07-10: Implemented opening wave. Added `lib/presets.ts`, `lib/opening-preload.ts`, and `components/opening/*`; integrated `OpeningExperience` into `app/page.tsx`; preserved `WorkspaceDesigner` for later builder wave.
 - 2026-07-10: Verification green (`typecheck`, `lint`, `build`). Applied @designer/@oracle review fixes for focus management, handoff clarity, door a11y, preload cleanup, and reveal timing.
+- 2026-07-10: Updated arrival to `public/doors.webp` with CTA left of the door and subtitle right of the door. Reworked `SlidingDoor` from frosted panels to light spill + portal ring, kept door visible through preparing, changed CTA to `aria-disabled` during handoff to preserve focus, and preloaded `/doors.webp` + `/office.jpg`. Re-verified green.
+- 2026-07-10: Validation pass: raised door overlay above hero after click so preparing status/glow are visible, tightened desktop flanking so both copy blocks hug the centered door, and improved mobile stacking so copy clears the door/dog. Re-verified green.
+- 2026-07-10: Fixed framer-motion hydration mismatch by adding client wrapper `components/opening/OpeningLoader.tsx` with `next/dynamic(..., { ssr: false })`; `app/page.tsx` now renders the loader. Re-verified green.
+- 2026-07-10: Removed `useReducedMotion` / reduced-motion gating from opening and workspace motion components so animations always play by request. Docs updated. Re-verified green.

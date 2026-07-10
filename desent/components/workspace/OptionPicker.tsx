@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { CatalogItem } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 import { formatIDR } from "@/lib/pricing";
@@ -13,7 +13,6 @@ type Props = {
 };
 
 export function OptionPicker({ label, items, selectedId, onSelect }: Props) {
-  const reduce = useReducedMotion();
   return (
     <section aria-labelledby={`${label}-heading`} className="space-y-3">
       <h2
@@ -32,7 +31,7 @@ export function OptionPicker({ label, items, selectedId, onSelect }: Props) {
               type="button"
               aria-pressed={active}
               onClick={() => onSelect(item.id)}
-              whileTap={reduce ? undefined : { scale: 0.97 }}
+              whileTap={{ scale: 0.97 }}
               className={cn(
                 "relative flex flex-col items-start gap-2 rounded-2xl border p-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/40",
                 active

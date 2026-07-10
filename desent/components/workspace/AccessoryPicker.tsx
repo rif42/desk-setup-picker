@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Check, Plus } from "lucide-react";
 import { accessories } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
@@ -12,7 +12,6 @@ type Props = {
 };
 
 export function AccessoryPicker({ selectedIds, onToggle }: Props) {
-  const reduce = useReducedMotion();
   return (
     <section aria-labelledby="accessories-heading" className="space-y-3">
       <h2
@@ -31,7 +30,7 @@ export function AccessoryPicker({ selectedIds, onToggle }: Props) {
               type="button"
               aria-pressed={active}
               onClick={() => onToggle(item.id)}
-              whileTap={reduce ? undefined : { scale: 0.96 }}
+              whileTap={{ scale: 0.96 }}
               className={cn(
                 "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/40",
                 active

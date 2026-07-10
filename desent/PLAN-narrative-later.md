@@ -31,7 +31,7 @@ Target taste: **premium calm + tropical warmth**, not backpacker cartoon or gene
 - Accent: one Bali signal only — palm green, terracotta, or ocean teal.
 - Scene: realistic room corner, soft daylight, depth, readable workspace.
 - Typography: clean, modern, confident; avoid novelty fonts.
-- Motion: springy add/remove, door reveal, layout transitions; respect `prefers-reduced-motion`.
+- Motion: springy add/remove, door reveal, layout transitions; animations always play and reduced-motion gating is intentionally disabled.
 - Copy: grounded, fast, friendly. No hype.
 
 ## Parked loading strategy

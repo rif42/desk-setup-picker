@@ -3,7 +3,6 @@
 import {
   AnimatePresence,
   motion,
-  useReducedMotion,
   type Transition,
 } from "framer-motion";
 import type { OpeningPhase } from "./types";
@@ -15,119 +14,128 @@ type Props = {
 // Locked door copy — kept in a JS string so the ellipsis glyph stays exact.
 const PREPARING = "Setting up your desk…";
 
-const SPRING: Transition = {
-  type: "spring",
-  stiffness: 120,
-  damping: 22,
-  mass: 0.9,
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+// Soft edge vignette that frames the centered door / room.
+const VIGNETTE =
+  "radial-gradient(78% 72% at 50% 46%, transparent 38%, rgba(28,25,23,0) 58%, rgba(28,25,23,0.5) 100%)";
+
+// Warm light spill pooling around the doorway (token-driven, dark-mode aware).
+const LIGHT_SPILL =
+  "radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent) 58%, transparent), color-mix(in srgb, var(--accent) 14%, transparent) 46%, transparent 74%)";
+
+type DoorState = {
+  vignette: number;
+  glow: { opacity: number; scale: number };
+  ring: { opacity: number; scale: number };
+  breathe: boolean;
 };
 
-// Warm light that spills from behind the frosted panels (token-driven, dark-mode aware).
-const LIGHT_SPILL =
-  "radial-gradient(58% 52% at 50% 44%, color-mix(in srgb, var(--accent) 52%, transparent), color-mix(in srgb, var(--accent) 14%, transparent) 48%, transparent 72%)";
-
-const PANEL_SHEEN =
-  "linear-gradient(100deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.04) 100%)";
-
-function glowFor(phase: OpeningPhase) {
+function stateFor(phase: OpeningPhase): DoorState {
   switch (phase) {
     case "arrival":
-      return { opacity: 0.35, scale: 1 };
+      return {
+        vignette: 0.3,
+        glow: { opacity: 0.25, scale: 0.9 },
+        ring: { opacity: 0, scale: 0.7 },
+        breathe: false,
+      };
     case "preparing":
-      return { opacity: 0.6, scale: 1.03 };
+      return {
+        vignette: 0.5,
+        glow: { opacity: 0.62, scale: 1 },
+        ring: { opacity: 0.45, scale: 0.95 },
+        breathe: true,
+      };
     case "revealing":
-      return { opacity: 0.9, scale: 1.16 };
+      return {
+        vignette: 0.18,
+        glow: { opacity: 0.95, scale: 1.55 },
+        ring: { opacity: 0, scale: 1.75 },
+        breathe: false,
+      };
     case "done":
-      return { opacity: 0.5, scale: 1.08 };
+      return {
+        vignette: 0.34,
+        glow: { opacity: 0.32, scale: 1.3 },
+        ring: { opacity: 0, scale: 1.5 },
+        breathe: false,
+      };
   }
 }
 
 export function SlidingDoor({ phase }: Props) {
-  const reduce = useReducedMotion();
-
-  const isOpen = phase === "revealing" || phase === "done";
-  const isDone = phase === "done";
+  const state = stateFor(phase);
   const isPreparing = phase === "preparing";
 
-  const slide: Transition = reduce ? { duration: 0 } : SPRING;
-  const fade: Transition = reduce ? { duration: 0 } : { duration: 0.5 };
-
-  const glow = glowFor(phase);
-  const panelTarget = isOpen ? "-102%" : "0%";
+  const move: Transition = { duration: 0.85, ease: EASE };
 
   return (
-    <>
-      <div
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* Framing vignette — clears during reveal so the room opens up. */}
+      <motion.div
         aria-hidden
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-      >
-        {/* Soft light spill from behind the door. */}
-        <motion.div
-          className="absolute inset-0"
-          style={{ background: LIGHT_SPILL }}
-          animate={{ opacity: glow.opacity, scale: glow.scale }}
-          transition={reduce ? { duration: 0 } : { duration: 0.9, ease: "easeOut" }}
-        />
+        className="absolute inset-0"
+        style={{ background: VIGNETTE }}
+        animate={{ opacity: state.vignette }}
+        transition={move}
+      />
 
-        {/* Left frosted-glass panel. */}
-        <motion.div
-          className="absolute inset-y-0 left-0 w-1/2 border-r border-foreground/[0.06] bg-card/55 backdrop-blur-2xl"
-          style={{ backgroundImage: PANEL_SHEEN }}
-          animate={{ x: panelTarget, opacity: isDone ? 0 : 1 }}
-          transition={{ x: slide, opacity: fade }}
-        />
+      {/* Warm light spill around the centered door; blooms + zooms on reveal. */}
+      <motion.div
+        aria-hidden
+        className="absolute left-1/2 top-1/2 h-[min(82vh,48rem)] w-[min(82vh,48rem)] -translate-x-1/2 -translate-y-1/2"
+        style={{ background: LIGHT_SPILL }}
+        animate={{
+          opacity: state.breathe
+            ? [state.glow.opacity * 0.7, state.glow.opacity, state.glow.opacity * 0.7]
+            : state.glow.opacity,
+          scale: state.glow.scale,
+        }}
+        transition={
+          state.breathe
+            ? {
+                opacity: { duration: 1.8, repeat: Infinity, ease: "easeInOut" },
+                scale: { duration: 0.85, ease: EASE },
+              }
+            : move
+        }
+      />
 
-        {/* Right frosted-glass panel. */}
-        <motion.div
-          className="absolute inset-y-0 right-0 w-1/2 border-l border-foreground/[0.06] bg-card/55 backdrop-blur-2xl"
-          style={{ backgroundImage: PANEL_SHEEN }}
-          animate={{
-            x: isOpen ? "102%" : "0%",
-            opacity: isDone ? 0 : 1,
-          }}
-          transition={{ x: slide, opacity: fade }}
-        />
+      {/* Expanding portal ring — suggests the door swinging open on reveal. */}
+      <motion.div
+        aria-hidden
+        className="absolute left-1/2 top-1/2 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent/45"
+        animate={{ opacity: state.ring.opacity, scale: state.ring.scale }}
+        transition={move}
+      />
 
-        {/* Center seam / mullion — only while closed. */}
-        <motion.div
-          className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-foreground/10"
-          animate={{ opacity: isOpen ? 0 : 1 }}
-          transition={reduce ? { duration: 0 } : { duration: 0.3 }}
-        />
-      </div>
-
-      {/* Preparing status — exposed separately from the decorative door tree. */}
+      {/* Preparing status — exposed politely; decorative pieces stay aria-hidden. */}
       <div
         role="status"
         aria-live="polite"
-        className="pointer-events-none absolute inset-x-0 bottom-16 flex justify-center"
+        className="absolute inset-x-0 bottom-16 flex justify-center"
       >
         <AnimatePresence>
           {isPreparing && (
             <motion.div
-              className="inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/80 px-4 py-2 text-sm font-medium text-foreground/80 shadow-sm backdrop-blur-md"
-              initial={reduce ? false : { opacity: 0, y: 8 }}
+              className="inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/85 px-4 py-2 text-sm font-medium text-foreground/85 shadow-sm backdrop-blur-md"
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={reduce ? undefined : { opacity: 0, y: 6 }}
-              transition={reduce ? { duration: 0 } : { duration: 0.4 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={{ duration: 0.4 }}
             >
               <motion.span
                 aria-hidden
                 className="h-2 w-2 rounded-full bg-accent"
-                animate={
-                  reduce ? undefined : { opacity: [0.4, 1, 0.4], scale: [0.85, 1, 0.85] }
-                }
-                transition={
-                  reduce
-                    ? undefined
-                    : { duration: 1.4, repeat: Infinity, ease: "easeInOut" }
-                }
+                animate={{ opacity: [0.4, 1, 0.4], scale: [0.85, 1, 0.85] }}
+                transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
               />
               {PREPARING}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-    </>
+    </div>
   );
 }

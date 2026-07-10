@@ -1,5 +1,5 @@
-import { OpeningExperience } from "@/components/opening/OpeningExperience";
+import { OpeningLoader } from "@/components/opening/OpeningLoader";
 
 export default function Home() {
-  return <OpeningExperience />;
+  return <OpeningLoader />;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { preloadOpeningAssets } from "@/lib/opening-preload";
 import { ArrivalHero } from "./ArrivalHero";
@@ -9,11 +9,9 @@ import { SlidingDoor } from "./SlidingDoor";
 import type { OpeningPhase } from "./types";
 
 const REVEAL_DELAY_MS = 700;
-const REVEAL_DELAY_REDUCED_MS = 120;
-const PRELOAD_TIMEOUT_MS = 1500;
+const PRELOAD_TIMEOUT_MS = 1200;
 
 export function OpeningExperience() {
-  const reduce = useReducedMotion();
   const [phase, setPhase] = useState<OpeningPhase>("arrival");
   const revealTimerRef = useRef<number | null>(null);
   const mountedRef = useRef(true);
@@ -47,7 +45,7 @@ export function OpeningExperience() {
 
     enterLockRef.current = true;
     setPhase("preparing");
-    await preloadOpeningAssets(["/office.jpg"], PRELOAD_TIMEOUT_MS);
+    await preloadOpeningAssets(["/doors.webp", "/office.jpg"], PRELOAD_TIMEOUT_MS);
 
     if (!mountedRef.current) return;
 
@@ -57,12 +55,14 @@ export function OpeningExperience() {
       if (!mountedRef.current) return;
       setPhase((current) => (current === "revealing" ? "done" : current));
       revealTimerRef.current = null;
-    }, reduce ? REVEAL_DELAY_REDUCED_MS : REVEAL_DELAY_MS);
-  }, [clearRevealTimer, phase, reduce]);
+    }, REVEAL_DELAY_MS);
+  }, [clearRevealTimer, phase]);
 
   const isRevealed = phase === "revealing" || phase === "done";
-  const heroActive = phase === "arrival";
+  const heroInteractive = phase === "arrival";
+  const heroFaded = phase === "revealing";
   const heroVisible = phase !== "done";
+  const doorLayerClass = phase === "arrival" ? "z-20" : "z-40";
 
   return (
     <div
@@ -82,21 +82,19 @@ export function OpeningExperience() {
         </div>
       )}
 
-      <div className="pointer-events-none absolute inset-0 z-20">
+      <div className={`pointer-events-none absolute inset-0 ${doorLayerClass}`}>
         <SlidingDoor phase={phase} />
       </div>
 
       {heroVisible && (
         <motion.div
-          aria-hidden={!heroActive}
-          className={`relative z-30 ${heroActive ? "" : "pointer-events-none"}`}
+          aria-hidden={heroFaded}
+          className={`relative z-30 ${heroInteractive ? "" : "pointer-events-none"}`}
           initial={false}
-          animate={{ opacity: heroActive ? 1 : 0, y: heroActive ? 0 : -12 }}
-          transition={
-            reduce ? { duration: 0 } : { duration: 0.25, ease: "easeOut" }
-          }
+          animate={{ opacity: heroFaded ? 0 : 1, y: heroFaded ? -12 : 0 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
         >
-          <ArrivalHero onEnter={handleEnter} disabled={!heroActive} />
+          <ArrivalHero onEnter={handleEnter} ariaDisabled={!heroInteractive} />
         </motion.div>
       )}
     </div>

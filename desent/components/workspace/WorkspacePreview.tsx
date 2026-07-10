@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import type { CatalogItem } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 
@@ -11,10 +11,7 @@ type Props = {
 };
 
 export function WorkspacePreview({ desk, chair, accessories }: Props) {
-  const reduce = useReducedMotion();
-  const spring = reduce
-    ? { duration: 0 }
-    : { type: "spring" as const, stiffness: 320, damping: 28 };
+  const spring = { type: "spring" as const, stiffness: 320, damping: 28 };
 
   return (
     <div
@@ -32,9 +29,9 @@ export function WorkspacePreview({ desk, chair, accessories }: Props) {
           <motion.div
             key={chair.id}
             layout
-            initial={reduce ? false : { opacity: 0, y: 24, scale: 0.9 }}
+            initial={{ opacity: 0, y: 24, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, y: 16, scale: 0.9 }}
+            exit={{ opacity: 0, y: 16, scale: 0.9 }}
             transition={spring}
             className={cn(
               "absolute bottom-14 z-10 grid size-20 place-items-center rounded-3xl shadow-xl",
@@ -55,11 +52,9 @@ export function WorkspacePreview({ desk, chair, accessories }: Props) {
               <motion.div
                 key={item.id}
                 layout
-                initial={reduce ? false : { opacity: 0, y: -18, scale: 0.8 }}
+                initial={{ opacity: 0, y: -18, scale: 0.8 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={
-                  reduce ? { opacity: 0 } : { opacity: 0, y: -12, scale: 0.8 }
-                }
+                exit={{ opacity: 0, y: -12, scale: 0.8 }}
                 transition={spring}
                 className={cn(
                   "grid size-14 place-items-center rounded-2xl shadow-lg",
@@ -78,9 +73,9 @@ export function WorkspacePreview({ desk, chair, accessories }: Props) {
             <motion.div
               key={desk.id}
               layout
-              initial={reduce ? false : { opacity: 0, scaleX: 0.7 }}
+              initial={{ opacity: 0, scaleX: 0.7 }}
               animate={{ opacity: 1, scaleX: 1 }}
-              exit={reduce ? { opacity: 0 } : { opacity: 0, scaleX: 0.7 }}
+              exit={{ opacity: 0, scaleX: 0.7 }}
               transition={spring}
               className={cn(
                 "flex h-16 w-full items-center justify-center gap-2 rounded-2xl shadow-xl",
