@@ -18,7 +18,7 @@ export function OptionPicker({ label, items, selectedId, onSelect }: Props) {
     <section aria-labelledby={`${label}-heading`} className="space-y-3">
       <h2
         id={`${label}-heading`}
-        className="text-xs font-bold uppercase tracking-[0.2em] text-foreground/50"
+        className="text-sm font-extrabold uppercase tracking-widest text-foreground"
       >
         {label}
       </h2>

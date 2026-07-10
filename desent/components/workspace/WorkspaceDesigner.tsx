@@ -21,7 +21,7 @@ export function WorkspaceDesigner() {
         <WorkspacePreview desk={desk} chair={chair} accessories={accessories} />
       </div>
 
-      <div className="pointer-events-auto relative z-20 flex w-[280px] shrink-0 flex-col gap-6 overflow-y-auto">
+      <div className="pointer-events-auto relative z-20 flex w-[280px] shrink-0 flex-col gap-6 overflow-y-auto overflow-x-hidden">
         <OptionPicker
           label="Pick a desk"
           items={desks}

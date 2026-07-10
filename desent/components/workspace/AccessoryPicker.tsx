@@ -20,10 +20,10 @@ export function AccessoryPicker({ selectedIds, onToggle }: Props) {
   return (
     <section aria-labelledby="accessories-heading" className="space-y-3">
       <div className="flex items-baseline justify-between gap-2">
-        <h2
-          id="accessories-heading"
-          className="text-xs font-bold uppercase tracking-[0.2em] text-foreground/50"
-        >
+      <h2
+        id="accessories-heading"
+        className="text-sm font-extrabold uppercase tracking-widest text-foreground"
+      >
           Accessories
         </h2>
         <span
