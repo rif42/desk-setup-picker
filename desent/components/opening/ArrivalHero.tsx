@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -75,18 +74,6 @@ export function ArrivalHero({
 
   return (
     <section className="relative flex items-center min-h-[100svh] overflow-hidden text-foreground">
-      {/* Full-bleed arrival photo — real closed door centered, porch + dog. */}
-      <div aria-hidden className="absolute inset-0">
-        <Image
-          src="/doors.webp"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
-      </div>
-
       {/* Faint edge vignette only — per-block halos ride behind each text block. */}
       <div
         aria-hidden

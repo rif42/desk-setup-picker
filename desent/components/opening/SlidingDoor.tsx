@@ -68,6 +68,13 @@ function stateFor(phase: OpeningPhase): DoorState {
         ring: { opacity: 0, scale: 1.5 },
         breathe: false,
       };
+    case "builder":
+      return {
+        vignette: 0.18,
+        glow: { opacity: 0.12, scale: 1.1 },
+        ring: { opacity: 0, scale: 1.5 },
+        breathe: false,
+      };
   }
 }
 

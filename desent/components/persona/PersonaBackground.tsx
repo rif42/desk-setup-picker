@@ -16,7 +16,7 @@ export function PersonaBackground({ reveal, blur }: PersonaBackgroundProps) {
       aria-hidden
       initial={false}
       animate={{ opacity: reveal ? 1 : 0 }}
-      transition={{ duration: 1, ease: "easeOut" }}
+      transition={{ duration: 1.3, ease: "easeOut" }}
       className="absolute inset-0 overflow-hidden"
     >
       <motion.div
