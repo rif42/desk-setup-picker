@@ -12,8 +12,16 @@ export function WorkspaceDesigner() {
   const { desk, chair, accessories, items, total } = selectItems(state);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(240px,280px)_1fr_minmax(280px,320px)] lg:items-start">
-      <div className="space-y-6">
+    <div
+      role="region"
+      aria-label="Workspace designer"
+      className="pointer-events-none fixed inset-0 z-10 flex items-stretch justify-between p-4 sm:p-6 lg:p-8"
+    >
+      <div className="pointer-events-none absolute inset-0 grid place-items-center">
+        <WorkspacePreview desk={desk} chair={chair} accessories={accessories} />
+      </div>
+
+      <div className="pointer-events-auto relative z-20 flex w-[280px] shrink-0 flex-col gap-6 overflow-y-auto">
         <OptionPicker
           label="Pick a desk"
           items={desks}
@@ -32,9 +40,7 @@ export function WorkspaceDesigner() {
         />
       </div>
 
-      <WorkspacePreview desk={desk} chair={chair} accessories={accessories} />
-
-      <div className="lg:sticky lg:top-6 lg:self-start">
+      <div className="pointer-events-auto relative z-20 flex w-[300px] shrink-0 flex-col overflow-y-auto">
         <CheckoutSummary items={items} total={total} onReset={state.reset} />
       </div>
     </div>

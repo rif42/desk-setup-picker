@@ -15,9 +15,9 @@ User centric means the app is for people who somewhat have decent amount of mone
 
 This means we have more wiggle room to implement expensive-but-worth-it designs. Initially, i wanted to do a simple three-js models for accurate lighting and detailed model viewing, but i quickly scrapped it bcs there's no way i can finish it in 8 hours.
 
-I want to have decent image quality, but still flexible enough to be swappable. I also want to have multiple office/background but quickly scrapped the idea bcs lighting would be too expensive. Image compositing comes to mind. But pictures are static in terms of angles and sizes. How to combine both worlds?
+I want to have decent image quality, but still flexible enough to be swappable. I also want to have multiple office/background to sell the beauty of Bali to customers, and to potentially open partnerships with top tier cafes. But quickly scrapped the idea bcs lighting would be too expensive. Image compositing comes to mind. But pictures are static in terms of angles and sizes. How to combine both worlds?
 
-Image editing is the answer. I admit my work is not the best on this one bcs i used LLM chatbot to generate and edit the images. There are yucky tinting, uneven lighting, chopped background (bcs for some i did it manually).
+Image editing is the answer. I admit my work is not the best on this one bcs i used LLM chatbot to generate and edit the images. There are yucky tinting, uneven lighting, weird shadows, chopped background (bcs for some i did it manually).
 
 In real life scenario, i would use specific image editing tools like adobe or comfyUI to facilitate faster and more accurate image generation.
 
