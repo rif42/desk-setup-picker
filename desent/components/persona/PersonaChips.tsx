@@ -43,7 +43,7 @@ export function PersonaChips({ value, visible, onSelect }: PersonaChipsProps) {
               delay: visible ? 0.08 * index : 0,
             }}
             className={cn(
-              "inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium shadow-sm backdrop-blur-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70",
+              "inline-flex items-center gap-2 rounded-full border px-6 py-3 text-lg font-semibold shadow-sm backdrop-blur-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70",
               active
                 ? "border-accent/70 bg-card/95 text-foreground shadow-lg"
                 : "border-foreground/15 bg-card/45 text-foreground/85 hover:border-accent/50 hover:bg-card/70",
