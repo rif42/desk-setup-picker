@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { motion, type Variants } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 type Props = {
@@ -47,11 +47,32 @@ const item: Variants = {
   },
 };
 
+const primaryTitle: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.035, delayChildren: 0.14 },
+  },
+};
+
+const primaryLetter: Variants = {
+  hidden: { opacity: 0, y: 26, rotate: -7, filter: "blur(8px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    rotate: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.72, ease: EASE },
+  },
+};
+
 export function ArrivalHero({
   onEnter,
   disabled = false,
   ariaDisabled,
 }: Props) {
+  const prefersReducedMotion = useReducedMotion();
+  const primaryWords = PRIMARY.split(" ");
+
   return (
     <section className="relative flex items-center min-h-[100svh] overflow-hidden text-foreground">
       {/* Full-bleed arrival photo — real closed door centered, porch + dog. */}
@@ -82,12 +103,34 @@ export function ArrivalHero({
       >
         {/* Far left — kicker, primary message, main CTA. */}
         <div className="relative order-1 max-w-md text-left lg:justify-self-start flex flex-col justify-center">
-          <motion.h1
-            variants={item}
-            className="mt-4 text-balance text-4xl font-extrabold tracking-tight sm:text-6xl text-black text-center"
-          >
-            {PRIMARY}
-          </motion.h1>
+          <div className="relative mt-4 text-center">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -inset-x-10 -inset-y-8 rounded-full blur-2xl"
+              style={{ background: TEXT_HALO }}
+            />
+            <motion.h1
+              aria-label={PRIMARY}
+              variants={prefersReducedMotion ? item : primaryTitle}
+              className="relative text-balance text-5xl font-black  sm:text-7xl drop-shadow-[0_12px_34px_rgba(255,247,237,0.78)]"
+            >
+              {primaryWords.map((word, wordIndex) => (
+                <motion.span
+                  key={`${word}-${wordIndex}`}
+                  aria-hidden
+                  variants={prefersReducedMotion ? undefined : primaryLetter}
+                  className={`inline-block whitespace-nowrap ${
+                    word === "Bali."
+                      ? "bg-gradient-to-br from-amber-300 via-orange-500 to-fuchsia-500 bg-clip-text pr-1 text-transparent drop-shadow-[0_10px_24px_rgba(0,0,0,0.82)]"
+                      : "text-stone-950"
+                  }`}
+                >
+                  {word}
+                  {wordIndex < primaryWords.length - 1 ? " " : ""}
+                </motion.span>
+              ))}
+            </motion.h1>
+          </div>
           <motion.h1
             variants={item}
             className="mt-4 text-balance text-4xl font-extrabold tracking-tight sm:text-5xl text-black text-center"
