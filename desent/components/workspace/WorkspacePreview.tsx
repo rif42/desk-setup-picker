@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import type { CatalogItem } from "@/lib/catalog";
-import { cn } from "@/lib/utils";
 
 type Props = {
   desk?: CatalogItem;
@@ -10,86 +11,87 @@ type Props = {
   accessories: CatalogItem[];
 };
 
+type Layer = {
+  item: CatalogItem;
+  z: number;
+  priority: boolean;
+};
+
+const SIZES = "(min-width: 1024px) 40vw, 100vw";
+const SPRING = { type: "spring" as const, stiffness: 320, damping: 28 };
+
+// Front -> back stacking, derived from id/category (never array order).
+function zFor(item: CatalogItem): number {
+  if (item.category === "chair") return 60;
+  if (item.category === "desk") return 10;
+  // accessories
+  if (item.id === "acc-laptop-stand") return 50;
+  if (item.id.startsWith("acc-monitor")) return 40;
+  if (item.id === "acc-keyboard-mx") return 30;
+  if (item.id === "acc-mouse-mx-master") return 20;
+  return 35; // safe fallback for any future accessory slot
+}
+
 export function WorkspacePreview({ desk, chair, accessories }: Props) {
-  const spring = { type: "spring" as const, stiffness: 320, damping: 28 };
+  const [errored, setErrored] = useState<ReadonlySet<string>>(() => new Set());
+
+  const markErrored = (id: string) =>
+    setErrored((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
+
+  // Backdrop office.webp is owned by the parent (PersonaBackground); this
+  // container stays transparent so the room shows through behind the layers.
+  const layers: Layer[] = [
+    ...(desk ? [{ item: desk, z: zFor(desk), priority: true }] : []),
+    ...accessories.map((item) => ({
+      item,
+      z: zFor(item),
+      priority: false,
+    })),
+    ...(chair ? [{ item: chair, z: zFor(chair), priority: false }] : []),
+  ].filter((layer) => !errored.has(layer.item.id));
+
+  const selectedNames = [
+    desk?.name,
+    chair?.name,
+    ...accessories.map((item) => item.name),
+  ].filter((name): name is string => Boolean(name));
 
   return (
     <div
       aria-label="Workspace preview"
-      className="relative flex min-h-[26rem] w-full items-end justify-center overflow-hidden rounded-[2rem] border border-foreground/10 bg-gradient-to-b from-sky-100 via-emerald-50 to-stone-100 p-6 shadow-inner dark:from-sky-950/40 dark:via-emerald-950/30 dark:to-stone-900"
+      className="relative aspect-[4/3] w-full overflow-hidden"
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-10 top-6 h-40 rounded-full bg-white/50 blur-3xl dark:bg-white/5"
-      />
+      {/* Accessible summary of the current setup (layers below are decorative). */}
+      <ul className="sr-only">
+        {selectedNames.map((name) => (
+          <li key={name}>{name}</li>
+        ))}
+      </ul>
 
-      {/* chair */}
-      <AnimatePresence mode="popLayout">
-        {chair && (
+      <AnimatePresence>
+        {layers.map(({ item, z, priority }) => (
           <motion.div
-            key={chair.id}
-            layout
-            initial={{ opacity: 0, y: 24, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.9 }}
-            transition={spring}
-            className={cn(
-              "absolute bottom-14 z-10 grid size-20 place-items-center rounded-3xl shadow-xl",
-              chair.tint,
-            )}
-            aria-label={`Chair: ${chair.name}`}
+            key={item.id}
+            aria-hidden
+            initial={{ opacity: 0, scale: 0.985 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.985 }}
+            transition={SPRING}
+            style={{ zIndex: z }}
+            className="absolute inset-0"
           >
-            <chair.icon className="size-9 text-white" aria-hidden />
+            <Image
+              src={item.envImage}
+              alt=""
+              fill
+              priority={priority}
+              sizes={SIZES}
+              className="object-contain"
+              onError={() => markErrored(item.id)}
+            />
           </motion.div>
-        )}
+        ))}
       </AnimatePresence>
-
-      {/* desk + accessories */}
-      <div className="relative z-20 flex w-full max-w-md flex-col items-center">
-        <div className="mb-3 flex h-24 items-end justify-center gap-3">
-          <AnimatePresence mode="popLayout">
-            {accessories.map((item) => (
-              <motion.div
-                key={item.id}
-                layout
-                initial={{ opacity: 0, y: -18, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -12, scale: 0.8 }}
-                transition={spring}
-                className={cn(
-                  "grid size-14 place-items-center rounded-2xl shadow-lg",
-                  item.tint,
-                )}
-                aria-label={item.name}
-              >
-                <item.icon className="size-7 text-white" aria-hidden />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-
-        <AnimatePresence mode="popLayout">
-          {desk && (
-            <motion.div
-              key={desk.id}
-              layout
-              initial={{ opacity: 0, scaleX: 0.7 }}
-              animate={{ opacity: 1, scaleX: 1 }}
-              exit={{ opacity: 0, scaleX: 0.7 }}
-              transition={spring}
-              className={cn(
-                "flex h-16 w-full items-center justify-center gap-2 rounded-2xl shadow-xl",
-                desk.tint,
-              )}
-              aria-label={`Desk: ${desk.name}`}
-            >
-              <desk.icon className="size-6 text-white/90" aria-hidden />
-              <span className="text-sm font-bold text-white">{desk.name}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <div className="mt-1 h-3 w-4/5 rounded-full bg-foreground/10 blur-sm" />
-      </div>
     </div>
   );
 }

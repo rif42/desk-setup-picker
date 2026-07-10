@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { preloadOpeningAssets } from "@/lib/opening-preload";
 import { type PresetId } from "@/lib/presets";
+import { useWorkspace } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { PersonaBackground } from "@/components/persona/PersonaBackground";
 import { PersonaChips } from "@/components/persona/PersonaChips";
@@ -19,6 +20,7 @@ const ENTERING_MS = 1300;
 export function OpeningExperience() {
   const [phase, setPhase] = useState<OpeningPhase>("arrival");
   const [persona, setPersona] = useState<PresetId | null>(null);
+  const applyPreset = useWorkspace((s) => s.applyPreset);
   const enteringTimerRef = useRef<number | null>(null);
   const mountedRef = useRef(true);
   const enterLockRef = useRef(false);
@@ -65,10 +67,14 @@ export function OpeningExperience() {
     }, ENTERING_MS);
   }, [clearEnteringTimer, phase]);
 
-  const handlePersonaSelect = useCallback((id: PresetId) => {
-    setPersona(id);
-    setPhase("builder");
-  }, []);
+  const handlePersonaSelect = useCallback(
+    (id: PresetId) => {
+      setPersona(id);
+      applyPreset(id);
+      setPhase("builder");
+    },
+    [applyPreset],
+  );
 
   const roomMounted =
     phase === "revealing" || phase === "persona" || phase === "builder";

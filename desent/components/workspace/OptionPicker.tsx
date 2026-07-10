@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import type { CatalogItem } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
@@ -23,7 +24,6 @@ export function OptionPicker({ label, items, selectedId, onSelect }: Props) {
       </h2>
       <div className="grid grid-cols-3 gap-2">
         {items.map((item) => {
-          const Icon = item.icon;
           const active = item.id === selectedId;
           return (
             <motion.button
@@ -39,7 +39,22 @@ export function OptionPicker({ label, items, selectedId, onSelect }: Props) {
                   : "border-foreground/10 bg-card hover:border-foreground/30",
               )}
             >
-              <Icon className="size-5" aria-hidden />
+              <span
+                className={cn(
+                  "relative aspect-square w-full overflow-hidden rounded-xl ring-1 ring-inset",
+                  active
+                    ? "bg-background/90 ring-background/30"
+                    : "bg-foreground/[0.04] ring-foreground/10",
+                )}
+              >
+                <Image
+                  src={item.image}
+                  alt=""
+                  fill
+                  sizes="120px"
+                  className="object-contain p-2"
+                />
+              </span>
               <span className="text-sm font-semibold leading-tight">
                 {item.name}
               </span>
