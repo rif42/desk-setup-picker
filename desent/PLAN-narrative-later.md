@@ -3,23 +3,14 @@
 Parking file for everything after the opening reveal. Details can come later.
 
 Current focus lives in `PLAN-narrative.md`: **arrival -> closed-door handoff -> room reveal**.
+Persona tuning split out into `PLAN-persona.md`.
+Live builder (preview + selection dock) split out into `PLAN-live-builder.md`.
 
 ## Parked flow
 
-After room reveal:
+After room reveal, the **live builder** runs (see `PLAN-live-builder.md`), then:
 
-1. **Persona tuning**
-   - Ask lightly: “What kind of work are you doing?”
-   - Show three chips only: **Coder**, **Designer**, **Business**.
-   - Default starting room: **Coder**.
-   - Selecting a persona swaps the full setup instantly: desk, chair, accessories.
-
-2. **Live builder**
-   - Picker/dock feeds the scene instantly.
-   - Desk, chair, monitors, lamps, plants, and accessories update the preview live.
-   - Add/remove should feel springy and responsive.
-
-3. **Summary / checkout**
+1. **Summary / checkout**
    - User reviews selected setup.
    - Checkout can be a confirmed summary plus stubbed submit for MVP.
 
@@ -53,28 +44,24 @@ Do not:
 1. Hero / arrival section.
 2. Closed-door CTA interaction.
 3. Workspace reveal.
-4. Persona chips: Coder, Designer, Business.
-5. Live workspace preview.
-6. Selection dock for desk, chair, accessories.
-7. Summary / checkout entry.
+4. Live builder: live workspace preview + selection dock for desk, chair, accessories (see `PLAN-live-builder.md`).
+5. Summary / checkout entry.
 
 ## Parked acceptance mapping
 
-- Desk selectable from at least 2 options: current catalog has 3.
-- Chair selectable from at least 2 options: current catalog has 3.
-- Accessories addable/removable: current catalog has 5.
-- Workspace preview updates live.
+- Desk/chair/accessories selectable and preview updates live: see `PLAN-live-builder.md`.
 - Summary/checkout view available.
 - Deployable to Vercel.
 - GitHub-ready code with README write-up.
 
 ## Parked open questions
 
-- Should persona chips appear before or after the first reveal?
-- Do we preload all catalog images up front or only the hero/default scene first?
+- Catalog image preload strategy: see `PLAN-live-builder.md`.
 - Should checkout be a modal/dialog or separate route?
 - How much Bali imagery is enough before it becomes theme-park?
 
 ## Changelog
 
 - 2026-07-10: Created parking file for post-reveal narrative flow, builder flow, design direction, acceptance mapping, and later decisions.
+- 2026-07-10: Split persona-tuning beat out into `PLAN-persona.md`.
+- 2026-07-10: Split live-builder beat out into `PLAN-live-builder.md`; builder-owned acceptance (desk/chair/accessories/live preview) and catalog-preload question moved with it.
