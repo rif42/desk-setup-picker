@@ -22,7 +22,7 @@ Design your dream Bali workspace, then rent it. Visual-first configurator for of
 
 **Pipeline.** Render the final scene with all components in one shot → use an LLM to extract the components one by one (`env-<filename>` in `/public`) → stitch everything back together in the website. Swapping stays fast because each image is only 10–50kb, the browser caches them, and it looks decent without loading a heavy 3D model + custom lighting. Best of both worlds: image quality, but flexible enough to swap.
 
-**Honesty.** I used an LLM chatbot to generate and edit the images, and it shows — yucky tinting, uneven lighting, weird shadows, chopped backgrounds (some I did manually). In a real scenario I'd use dedicated image tools like Adobe or ComfyUI for faster, more accurate generation.
+I used an LLM chatbot to generate and edit the images, and it shows — yucky orange tinting, uneven lighting, weird shadows, chopped backgrounds (some I did manually). In a real scenario I'd use dedicated image tools like Adobe or ComfyUI for faster, more accurate generation.
 
 **With more time.** Multiple office/background settings to sell the beauty of Bali (and open partnerships with top-tier cafes) — scrapped because consistent lighting across comps was too expensive for the window. A proper image pipeline (ComfyUI/Adobe). Mobile scaling — theoretically fine, but out of the requirements, so I didn't do it.
 
@@ -58,17 +58,4 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+also, i think your firebase api public key is embedded on your `https://www.desent.io/coding-test-2` not sure if its dangerous

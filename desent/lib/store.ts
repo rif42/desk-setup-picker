@@ -1,10 +1,27 @@
 "use client";
 
 import { create } from "zustand";
-import { byId, type CatalogItem } from "./catalog";
+import { byId, isMonitorId, type CatalogItem } from "./catalog";
 import { DEFAULT_PRESET_ID, getPreset, type PresetId } from "./presets";
 
 const MAX_ACCESSORIES = 5;
+
+const sanitizeAccessoryIds = (ids: string[]) => {
+  let hasMonitor = false;
+  const next: string[] = [];
+
+  for (const id of ids) {
+    if (isMonitorId(id)) {
+      if (hasMonitor) continue;
+      hasMonitor = true;
+    }
+    if (next.includes(id)) continue;
+    next.push(id);
+    if (next.length >= MAX_ACCESSORIES) break;
+  }
+
+  return next;
+};
 
 type WorkspaceState = {
   deskId: string;
@@ -20,7 +37,7 @@ type WorkspaceState = {
 const defaultPreset = getPreset(DEFAULT_PRESET_ID);
 const DEFAULT_DESK = defaultPreset.deskId;
 const DEFAULT_CHAIR = defaultPreset.chairId;
-const DEFAULT_ACCESSORIES = defaultPreset.accessoryIds;
+const DEFAULT_ACCESSORIES = sanitizeAccessoryIds(defaultPreset.accessoryIds);
 
 export const useWorkspace = create<WorkspaceState>((set) => ({
   deskId: DEFAULT_DESK,
@@ -33,6 +50,11 @@ export const useWorkspace = create<WorkspaceState>((set) => ({
       if (s.accessoryIds.includes(id)) {
         return { accessoryIds: s.accessoryIds.filter((x) => x !== id) };
       }
+      if (isMonitorId(id)) {
+        const withoutMonitor = s.accessoryIds.filter((x) => !isMonitorId(x));
+        if (withoutMonitor.length >= MAX_ACCESSORIES) return s;
+        return { accessoryIds: [...withoutMonitor, id] };
+      }
       if (s.accessoryIds.length >= MAX_ACCESSORIES) {
         return s;
       }
@@ -43,7 +65,7 @@ export const useWorkspace = create<WorkspaceState>((set) => ({
     set({
       deskId: preset.deskId,
       chairId: preset.chairId,
-      accessoryIds: preset.accessoryIds,
+      accessoryIds: sanitizeAccessoryIds(preset.accessoryIds),
     });
   },
   reset: () =>

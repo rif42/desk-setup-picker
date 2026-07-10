@@ -158,3 +158,5 @@ export const accessories: CatalogItem[] = [
 export const catalog: CatalogItem[] = [...desks, ...chairs, ...accessories];
 
 export const byId = (id: string) => catalog.find((item) => item.id === id);
+
+export const isMonitorId = (id: string) => id.startsWith("acc-monitor");

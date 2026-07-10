@@ -16,9 +16,9 @@ export const presets: Record<PresetId, WorkspacePreset> = {
     chairId: "chair-ergo-mesh",
     accessoryIds: [
       "acc-monitor-27-4k",
-      "acc-monitor-34-gaming",
       "acc-keyboard-mx",
       "acc-mouse-mx-master",
+      "acc-laptop-stand",
     ],
   },
   designer: {

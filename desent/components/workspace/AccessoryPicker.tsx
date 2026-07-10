@@ -36,28 +36,32 @@ export function AccessoryPicker({ selectedIds, onToggle }: Props) {
           {selectedIds.length}/{MAX_ACCESSORIES}
         </span>
       </div>
+      <p className="text-xs text-foreground/55">
+        Choose one monitor type. Switch monitors anytime.
+      </p>
       <div className="flex flex-wrap gap-2">
         {accessories.map((item) => {
           const active = selectedIds.includes(item.id);
           const cappedOut = atCap && !active;
+          const disabled = cappedOut;
           return (
             <motion.button
               key={item.id}
               type="button"
               aria-pressed={active}
-              aria-disabled={cappedOut}
-              disabled={cappedOut}
+              aria-disabled={disabled}
+              disabled={disabled}
               onClick={() => {
-                if (cappedOut) return;
+                if (disabled) return;
                 onToggle(item.id);
               }}
-              whileTap={cappedOut ? undefined : { scale: 0.96 }}
+              whileTap={disabled ? undefined : { scale: 0.96 }}
               className={cn(
                 "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/40",
                 active
                   ? "border-transparent bg-foreground text-background"
                   : "border-foreground/10 bg-card hover:border-foreground/30",
-                cappedOut && "cursor-not-allowed opacity-50",
+                disabled && "cursor-not-allowed opacity-50",
               )}
             >
               <span
