@@ -9,9 +9,12 @@ Design your dream Bali workspace, then rent it. Visual-first configurator for of
 
 **TL;DR:** image compositing beat 3D for this scope.
 
-**Audience.** User is a freelancer who just landed in Bali and needs a setup fast — someone with decent money, which means their devices aren't all potatoes. That kills the hardware tax (even on heavy Next.js) and frees budget for expensive-but-worth-it visuals.
+### Audience
 
-**Constraint.** 8 hours. Anything that can't ship in that window gets cut.
+User is a freelancer who just landed in Bali and needs a setup fast — someone with decent money, which means their devices aren't all potatoes. That kills the hardware tax (even on heavy Next.js) and frees budget for expensive-but-worth-it visuals.
+
+### Constraint
+8 hours. Anything that can't ship in that window gets cut.
 
 | Option | Verdict | Why |
 |---|---|---|
@@ -20,11 +23,15 @@ Design your dream Bali workspace, then rent it. Visual-first configurator for of
 | Static photos | cut | rigid angles/sizes, not swappable |
 | **Image compositing** | **picked** | decent quality **and** swappable **and** cheap |
 
-**Pipeline.** Render the final scene with all components in one shot → use an LLM to extract the components one by one (`env-<filename>` in `/public`) → stitch everything back together in the website. Swapping stays fast because each image is only 10–50kb, the browser caches them, and it looks decent without loading a heavy 3D model + custom lighting. Best of both worlds: image quality, but flexible enough to swap.
+### Pipeline 
+
+Render the final scene with all components in one shot → use an LLM to extract the components one by one (`env-<filename>` in `/public`) → stitch everything back together in the website. Swapping stays fast because each image is only 10–50kb, the browser caches them, and it looks decent without loading a heavy 3D model + custom lighting. Best of both worlds: image quality, but flexible enough to swap.
 
 I used an LLM chatbot to generate and edit the images, and it shows — yucky orange tinting, uneven lighting, weird shadows, chopped backgrounds (some I did manually). In a real scenario I'd use dedicated image tools like Adobe or ComfyUI for faster, more accurate generation.
 
-**With more time.** Multiple office/background settings to sell the beauty of Bali (and open partnerships with top-tier cafes) — scrapped because consistent lighting across comps was too expensive for the window. A proper image pipeline (ComfyUI/Adobe). Mobile scaling — theoretically fine, but out of the requirements, so I didn't do it.
+### With more time 
+
+Multiple office/background settings to sell the beauty of Bali (and open partnerships with top-tier cafes) — scrapped because consistent lighting across comps was too expensive for the window. A proper image pipeline (ComfyUI/Adobe). Mobile scaling — theoretically fine, but out of the requirements, so I didn't do it.
 
 ## Tech stack
 

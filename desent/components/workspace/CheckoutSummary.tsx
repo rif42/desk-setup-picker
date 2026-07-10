@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import type { CatalogItem } from "@/lib/catalog";
 import { formatIDR } from "@/lib/pricing";
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export function CheckoutSummary({ items, total, onReset }: Props) {
+  const router = useRouter();
   return (
     <aside className="flex h-full flex-col rounded-[2rem] border border-foreground/10 bg-card p-6 shadow-sm">
       <h2 className="text-lg font-bold">Your setup</h2>
@@ -61,7 +63,7 @@ export function CheckoutSummary({ items, total, onReset }: Props) {
 
         <Button
           className="mt-4 w-full"
-          onClick={() => console.info("checkout: later")}
+          onClick={() => router.push("/checkout")}
         >
           Checkout
         </Button>
